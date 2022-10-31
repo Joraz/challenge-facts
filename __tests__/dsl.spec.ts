@@ -32,5 +32,33 @@ describe("Utils", () => {
 
       expect(response).toEqual({ kind: "invalid", error: "schema-fail" });
     });
+
+    it("returns an invalidresponse when the supplied dsl contains an incorrect attribute", () => {
+      const response = validateDslExpression(`
+      {
+        "expression": {"fn": "*", "a": "foo", "b": 2},
+        "security": "EFG"
+      }
+      `);
+
+      expect(response).toEqual({ kind: "invalid", error: "schema-fail" });
+    });
+
+    it("returns a validresponse when the supplied dsl is correctly formatted", () => {
+      const response = validateDslExpression(`
+      {
+        "expression": {"fn": "*", "a": "sales", "b": 2},
+        "security": "ABC"
+      }
+      `);
+
+      expect(response).toEqual({
+        kind: "valid",
+        data: {
+          expression: { fn: "*", a: "sales", b: 2 },
+          security: "ABC",
+        },
+      });
+    });
   });
 });

@@ -1,6 +1,9 @@
 import type { NextPage } from "next";
 import Head from "next/head";
 import { ChangeEvent, useState } from "react";
+
+import { validateDslExpression } from "../utils/dsl";
+
 import styles from "./index.module.css";
 
 interface DSLExample {
@@ -66,7 +69,20 @@ const examples: readonly DSLExample[] = [
 
 const Home: NextPage = () => {
   const [expression, setExpression] = useState<string>(examples[0].dsl);
-  const setDsl = (dsl: string) => () => setExpression(dsl);
+  const [showBanner, setShowBanner] = useState<boolean>(false);
+  const [hasError, setHasError] = useState<boolean>(false);
+
+  const setDsl = (dsl: string) => () => {
+    setExpression(dsl);
+    setShowBanner(false);
+  };
+
+  const handleRunClick = () => {
+    setShowBanner(true);
+
+    const validatedDsl = validateDslExpression(expression);
+    setHasError(validatedDsl.kind === "invalid");
+  };
 
   return (
     <>
@@ -124,13 +140,28 @@ const Home: NextPage = () => {
             }
             rows={8}
           ></textarea>
-          <div className={[styles.message, styles.messageSuccess].join(" ")}>
-            DSL query ran successfully!
-          </div>
-          <div className={[styles.message, styles.messageError].join(" ")}>
-            There is a problem with your DSL query.
-          </div>
-          <button data-testid="run-button" type="button">
+          {showBanner === true &&
+            (hasError ? (
+              <div
+                className={[styles.message, styles.messageError].join(" ")}
+                data-testid="error-banner"
+              >
+                There is a problem with your DSL query.
+              </div>
+            ) : (
+              <div
+                className={[styles.message, styles.messageSuccess].join(" ")}
+                data-testid="success-banner"
+              >
+                DSL query ran successfully!
+              </div>
+            ))}
+
+          <button
+            data-testid="run-button"
+            type="button"
+            onClick={handleRunClick}
+          >
             Run
           </button>
         </div>

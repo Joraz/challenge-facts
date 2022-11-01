@@ -4,6 +4,15 @@ The goal of the project is to build a small interpreter for a JSON-based DSL tha
 
 You should aim to spend a few hours on the project; it's ok if you don't finish! Please indicate any areas that are incomplete and how you might finish them given more time.
 
+## ❗ Potential Improvements
+
+Some things that I would have liked to do, given more time:
+
+- More robust validation of the DSL expressions, such as being able to inform the user of the specific problem
+  - Tied to this, being able to highlight invalid syntax or incorrect property names inside the input would be very cool & helpful
+- Handling the verification & evaluation of expressions server-side. At the moment everything is done on the client, which I think is fine for a small example. But if the expressions are likely to become larger and more complicated, offloading the calculation to the server could introduce performance benefits. This would be in addition to niceties, such as caching.
+- A much larger piece of work would be to build UI tooling that allows users to build the expressions instead of handwriting them (such as using a drag and drop interface). This would help cut down on malformed expressions.
+
 ## Requirements
 
 - The example expressions are correctly interpreted and give the correct result

@@ -41,10 +41,9 @@ describe("Index page", () => {
     );
   });
 
-  // TODO: Complete this test suite once implementation is complete
-  xit('should evaluate the expression when the "run" button is clicked', () => {
+  it('should evaluate the expression when the "run" button is clicked', () => {
     fireEvent.click(screen.getByTestId("run-button"));
 
-    fail("Implement me!");
+    expect(screen.getByLabelText("Output:")).toHaveValue("8");
   });
 });

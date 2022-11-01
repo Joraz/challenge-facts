@@ -2,7 +2,7 @@ import type { NextPage } from "next";
 import Head from "next/head";
 import { ChangeEvent, useState } from "react";
 
-import { validateDslExpression } from "../utils/dsl";
+import { evaluateDslExpression, validateDslExpression } from "../utils/dsl";
 
 import styles from "./index.module.css";
 
@@ -69,11 +69,13 @@ const examples: readonly DSLExample[] = [
 
 const Home: NextPage = () => {
   const [expression, setExpression] = useState<string>(examples[0].dsl);
+  const [output, setOutput] = useState<number | "">("");
   const [showBanner, setShowBanner] = useState<boolean>(false);
   const [hasError, setHasError] = useState<boolean>(false);
 
   const setDsl = (dsl: string) => () => {
     setExpression(dsl);
+    setOutput("");
     setShowBanner(false);
   };
 
@@ -81,6 +83,16 @@ const Home: NextPage = () => {
     setShowBanner(true);
 
     const validatedDsl = validateDslExpression(expression);
+
+    if (validatedDsl.kind === "valid") {
+      try {
+        const evaluatedOutput = evaluateDslExpression(validatedDsl.data);
+        setOutput(evaluatedOutput);
+      } catch {
+        setHasError(true);
+      }
+    }
+
     setHasError(validatedDsl.kind === "invalid");
   };
 
@@ -174,6 +186,7 @@ const Home: NextPage = () => {
             className={styles.field}
             readOnly
             rows={1}
+            value={output}
           ></textarea>
         </div>
       </main>
